@@ -15,17 +15,17 @@ def ext_euclid(a, b):                # Extended Euclid algorithm function for fi
 
 class elcurve:                       # Modular elliptic curve object class
     def __init__(self, p, a, b):
-        self.p = p                       ### Prime modulo
-        self.a = a                       ### Curve coefficients
+        self.p = p                              ### Prime modulo
+        self.a = a                              ### Curve coefficients
         self.b = b
         self.gen = None
     
-    def inv(self, n):                    ### To find modular inverse in the context of the curve
+    def inv(self, n):                           ### To find modular inverse in the context of the curve
         return (ext_euclid(n, self.p)[1])%self.p
     
     ##### TODO: Generator finder
     
-    def pchk(self, point):               ### To check whether a point belongs to the curve
+    def pchk(self, point):                      ### To check whether a point belongs to the curve
         if point == (-1, -1):
             return True
         x, y = point
@@ -33,7 +33,7 @@ class elcurve:                       # Modular elliptic curve object class
             return True
         return False
     
-    def padd(self, point1, point2):      ### To add two points on the curve
+    def padd(self, point1, point2):             ### To add two points on the curve
         x1, y1 = point1
         x2, y2 = point2
         if x1 == x2:
@@ -47,7 +47,7 @@ class elcurve:                       # Modular elliptic curve object class
         y3 = (g*(x1-x3)-y1)%self.p
         return (x3, y3)
     
-    def pdbl(self, point):               ### To double a point on the curve
+    def pdbl(self, point):                      ### To double a point on the curve
         x1, y1 = point
         if x1 < 0 or y1 == 0:
             return (-1, -1)
@@ -56,7 +56,7 @@ class elcurve:                       # Modular elliptic curve object class
         y2 = ((g*(x1-x2))%self.p-y1)%self.p
         return (x2, y2)
     
-    def pscmul(self, n, point):          ### To multiply point by a constant
+    def pscmul(self, n, point):                 ### To multiply point by a constant
         if n:
             res = point
             exp = []
@@ -73,9 +73,11 @@ class elcurve:                       # Modular elliptic curve object class
         else:
             return (-1, -1)
     
-    def keygen(self, dot, point = None): ### To generate key points
+    def keygen(self, dot = None, point = None): ### To generate key points
         if not point:
             point = self.gen
+        if not dot:
+            dot = random.randint(3, self.p-1)
         return self.pscmul(dot, point)
             
 
