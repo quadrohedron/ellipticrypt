@@ -7,23 +7,25 @@ _y = 390157510246556628525279459266514995562533196655
 
 import random
 
-def ext_euclid(a, b):
+def ext_euclid(a, b):                # Extended Euclid algorithm function for finding modular inverses
     if not b:
         return (a, 1, 0)
     d1, x1, y1 = ext_euclid(b, a%b)
     return (d1, y1, x1-(a//b)*y1)
 
-class elcurve:
+class elcurve:                       # Modular elliptic curve object class
     def __init__(self, p, a, b):
-        self.p = p
-        self.a = a
+        self.p = p                       ### Prime modulo
+        self.a = a                       ### Curve coefficients
         self.b = b
         self.gen = None
     
-    def inv(self, n):
+    def inv(self, n):                    ### To find modular inverse in the context of the curve
         return (ext_euclid(n, self.p)[1])%self.p
     
-    def pchk(self, point):
+    ##### TODO: Generator finder
+    
+    def pchk(self, point):               ### To check whether a point belongs to the curve
         if point == (-1, -1):
             return True
         x, y = point
@@ -31,7 +33,7 @@ class elcurve:
             return True
         return False
     
-    def padd(self, point1, point2):
+    def padd(self, point1, point2):      ### To add two points on the curve
         x1, y1 = point1
         x2, y2 = point2
         if x1 == x2:
@@ -45,7 +47,7 @@ class elcurve:
         y3 = (g*(x1-x3)-y1)%self.p
         return (x3, y3)
     
-    def pdbl(self, point):
+    def pdbl(self, point):               ### To double a point on the curve
         x1, y1 = point
         if x1 < 0 or y1 == 0:
             return (-1, -1)
@@ -54,7 +56,7 @@ class elcurve:
         y2 = ((g*(x1-x2))%self.p-y1)%self.p
         return (x2, y2)
     
-    def pscmul(self, n, point):
+    def pscmul(self, n, point):          ### To multiply point by a constant
         if n:
             res = point
             exp = []
@@ -71,11 +73,12 @@ class elcurve:
         else:
             return (-1, -1)
     
-    def keygen(self, dot, gen = None):
-        if not gen:
-            gen = self.gen
-        return self.pscmul(dot, gen)
+    def keygen(self, dot, point = None): ### To generate key points
+        if not point:
+            point = self.gen
+        return self.pscmul(dot, point)
             
 
+# MICROSOFT DRM CURVE AND GENERATOR
 _mdrmc = elcurve(_p, _a, _b)
 _mdrmg = (_x, _y)
